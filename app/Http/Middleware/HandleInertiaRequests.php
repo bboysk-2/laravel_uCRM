@@ -41,7 +41,9 @@ class HandleInertiaRequests extends Middleware
             },
             // セッションに保存したフラッシュメッセージを取得
             'flash' => [
-                'message' => fn() => $request->session()->get('message')
+                'message' => fn () => $request->session()->get('message'),
+                'status' => fn () => $request->session()->get('status'),
+
             ]
         ]);
     }
