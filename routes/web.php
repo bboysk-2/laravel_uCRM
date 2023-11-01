@@ -7,11 +7,17 @@ use Inertia\Inertia;
 use App\Http\Controllers\InertiaTestController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\PurchaseController;
 
+//RESTfulなルート（index、create、store、show、edit、update、destroy）を定義
+//itemsと関連するリソースにアクセスするためには、ユーザー認証、メールアドレスの確認を必要とする
 Route::resource('items', ItemController::class)
     ->middleware(['auth', 'verified']);
 
 Route::resource('customers', CustomerController::class)
+    ->middleware(['auth', 'verified']);
+
+Route::resource('purchases', PurchaseController::class)
     ->middleware(['auth', 'verified']);
 
 Route::get(
