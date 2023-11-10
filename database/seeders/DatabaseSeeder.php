@@ -25,12 +25,12 @@ class DatabaseSeeder extends Seeder
         // 登録されているitem(サービス)全てを取得
         $items = \App\Models\Item::all();
 
-
-        Purchase::factory(100)->create()
+        // Purchase::factory(何件分のダミーデータを作るか)
+        Purchase::factory(30000)->create()
             ->each(function (Purchase $purchase) use ($items) {
                 // purchaseテーブルに登録した際にitemsテーブルの情報に紐づけながら中間テーブルに情報を登録する
                 $purchase->items()->attach(
-                    // サービスを1~3件登録して配列化、quantity(数量)カラムに1~5の値を指定
+                    // 商品を1~3件登録して配列化、quantity(数量)カラムに1~5の値を指定
                     $items->random(rand(1, 3))->pluck('id')->toArray(),
                     ['quantity' => rand(1, 5)]
                 );
