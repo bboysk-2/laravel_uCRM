@@ -8,6 +8,9 @@ use App\Http\Controllers\InertiaTestController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\AnalysisController;
+
+Route::get('/analysis', [AnalysisController::class, 'index'])->name('analysis');
 
 //RESTfulなルート（index、create、store、show、edit、update、destroy）を定義
 //itemsと関連するリソースにアクセスするためには、ユーザー認証、メールアドレスの確認を必要とする

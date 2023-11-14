@@ -120,12 +120,13 @@ class PurchaseController extends Controller
      */
     public function edit(Purchase $purchase)
     {
-        // $purchase->idに対応するPurchaseモデルのレコードをデータベースから取得
+        // viewから送られてきた$purchase->idに対応するPurchaseモデルのレコードをデータベースから取得
         $purchase = Purchase::find($purchase->id);
 
         $allItems = Item::select('id', 'name', 'price')
             ->get();
 
+        // 数量情報が更新されたアイテム情報格納用
         $items = [];
 
         foreach ($allItems as $allItem) {
@@ -170,15 +171,16 @@ class PurchaseController extends Controller
             $purchase->status = $request->status;
             $purchase->save();
 
+            // 新しいアイテムの数量情報格納用
             $items = [];
 
             foreach($request->items as $item) {
-                $items = $items + [
+                $items = $items + [ //右辺の$itemsは$request->itemsを示しているらしい(gpt)
                     // item_id => [ 中間テーブルの列名 => 値 ]
                     $item['id'] => [ 'quantity' => $item['quantity']]
                 ];
             }
-
+            //sync()... 現在の中間テーブルのデータを$items配列の内容に合わせて更新
             $purchase->items()->sync($items);
 
             DB::commit();
