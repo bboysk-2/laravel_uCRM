@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\Order;
 use Illuminate\Support\Facades\DB;
+use App\Services\AnalysisService;
 
 class AnalysisController extends Controller
 {
@@ -17,20 +18,18 @@ class AnalysisController extends Controller
 
         // タイプが'perDay'の場合の条件分岐
         if($request->type === 'perDay') {
-            $subQuery->where('status', true)
-            ->groupBy('id')
-            // DATE_FORMAT()で第一引数に指定したカラムのフォーマットを第二引数で設定。※対象のカラムが日付型 (DATEやDATETIMEなど) であることが必要
-            ->selectRaw('SUM(subtotal) AS totalPerPurchase, DATE_FORMAT(created_at, "%Y/%m/%d") AS date')
-            ->groupBy('date');
+            // 配列を受け取り変数に格納するため list() を使う
+            list($data, $labels, $totals) = AnalysisService::perDay($subQuery);
+        }
 
-            // サブクエリを使用してデータベースから日別の集計データを取得
-            $data = DB::table($subQuery)
-            ->groupBy('date')
-            ->selectRaw('date, sum(totalPerPurchase) as total')
-            ->get();
+        if($request->type === 'perMonth') {
+            // 配列を受け取り変数に格納するため list() を使う
+            list($data, $labels, $totals) = AnalysisService::perMonth($subQuery);
+        }
 
-            $labels = $data->pluck('date');
-            $totals = $data->pluck('total');
+        if($request->type === 'perYear') {
+            // 配列を受け取り変数に格納するため list() を使う
+            list($data, $labels, $totals) = AnalysisService::perYear($subQuery);
         }
 
        return response()->json([
